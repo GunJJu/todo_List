@@ -1,0 +1,20 @@
+.TodoEditor {
+    display: flex;
+    gap: 10px;
+}
+
+.TodoEditor input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.TodoEditor button {
+    cursor: pointer;
+    background-color: skyblue;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    width: 80px;
+
+}

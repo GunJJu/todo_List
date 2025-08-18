@@ -1,0 +1,45 @@
+.todoTtem {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.todoTtem content {
+    flex: 1
+}
+
+.todoTtem.isCompleted {
+    background-color: #eee;
+}
+
+.todoTtem.isCompleted .content {
+    text-decoration: line-through;
+}
+
+.todoTtem .date {
+    font-size: 14px;
+    color: gray
+}
+
+.btn-wrap {
+    display: flex;
+    gap: 5px;
+}
+
+.todoTtem button {
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff
+}
+
+.updateBtn {
+    background-color: darkgreen;
+}
+
+.deleteBtn {
+    background-color: darkred;
+}
