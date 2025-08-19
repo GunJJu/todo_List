@@ -2,7 +2,7 @@ import React from 'react'
 import './TodoList.css'
 import TodoItem from './TodoItem'
 
-const TodoList = ({ todos }) => {
+const TodoList = ({ todos, updatedChecked, updatedText, onDelete }) => {
     return (
         <div className='TodoList'>
             <h4>Todo List 🌱</h4>
@@ -10,7 +10,12 @@ const TodoList = ({ todos }) => {
             <div className='todos-wrapper'>
                 {todos.map((todo, i) => (
 
-                    <TodoItem key={i} todo={todo} />
+                    <TodoItem
+                        key={i}
+                        todo={todo}
+                        updatedChecked={updatedChecked}
+                        updatedText={updatedText}
+                        onDelete={onDelete} />
                 ))}
 
             </div>

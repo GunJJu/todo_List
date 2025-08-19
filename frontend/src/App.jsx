@@ -26,9 +26,13 @@ function App() {
 
   const onCreate = async (todoText) => {
     if (!todoText.trim()) return
+
     try {
+
       const res = await axios.post(API, { text: todoText.trim() })
+
       const created = res.data?.todo ?? res.data
+
       if (Array.isArray(res.data?.todos)) {
         setTodos(res.data.todos)
       } else {
@@ -36,32 +40,40 @@ function App() {
       }
 
     } catch (error) {
-      console.log("가져오기 실패..! : ", error)
+      console.log("추가 실패", error)
     }
   }
 
+
   const onDelete = async (id) => {
     try {
-      if (!confirm("정말 삭제할거에요?")) return
+      if (!confirm("정말 삭제할까요?")) return
+
       const { data } = await axios.delete(`${API}/${id}`)
+
       if (Array.isArray(data?.todos)) {
         setTodos(data.todos)
         return
       }
-      const deletedId = data ? deletedId ?? data?.todo?._id ?? data?._id ?? id
-      setTodos((prev) => prev.filter(t)=> t._id !== deletedId))
-} catch (error) {
-  console.log("삭제 실패", error)
-}
+
+      const deletedId = data?.deletedId ?? data?.todo?._id ?? data?._id ?? id
+      setTodos((prev) => prev.filter((t) => t._id !== deletedId))
+    } catch (error) {
+      console.error("삭제 실패", error)
+    }
   }
 
-return (
-  <div className='App'>
-    <Header />
-    <TodoEditor onCreat={onCreate} />
-    <TodoList todos={todos} onDelete={onDelete} />
-  </div>
-)
+  return (
+    <div className='App'>
+      <Header />
+      <TodoEditor onCreate={onCreate} />
+      <TodoList
+        todos={Array.isArray(todos) ? todos : []}
+        onDelete={onDelete}
+        onUpdateText={onUpdateText}
+        onUpdateChecked={onUpdateChecked} />
+    </div>
+  )
 }
 
 export default App

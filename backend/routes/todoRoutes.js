@@ -2,12 +2,13 @@ const express = require("express")
 const router = express.Router()
 const mongoose = require("mongoose")
 const Todo = require("../models/todo")
+
 const ensureObjectId = (id, res) => {
     if (!mongoose.isValidObjectId(id)) {
         res.status(400).json({ message: "유효하지 않은 ID형식 입니다!" })
         return false
     } else {
-        return false
+        return true
     }
 }
 
@@ -53,10 +54,10 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const updateDate = req.body
+        const updateData = req.body
         if (!ensureObjectId(id, res)) return
 
-        const updated = await Todo.findByIdAndUpdate(id, updateDate, {
+        const updated = await Todo.findByIdAndUpdate(id, updateData, {
             new: true,
             runValidators: true
         })
@@ -65,7 +66,7 @@ router.put('/:id', async (req, res) => {
             return res.status(400).json({ message: "해당 ID의 할일 목록이 없습니다!" })
         }
 
-        res.status(201).json({ message: "수정하기 성공!!", updated })
+        res.status(201).json({ message: "수정하기 성공!!", todo: updated })
     } catch (error) {
         res.status(400).json({ error: "데이터를 불러오지 못했어여 ㅜ" })
 
