@@ -2,6 +2,14 @@ const express = require("express")
 const router = express.Router()
 const mongoose = require("mongoose")
 const Todo = require("../models/todo")
+const ensureObjectId = (id, res) => {
+    if (!mongoose.isValidObjectId(id)) {
+        res.status(400).json({ message: "유효하지 않은 ID형식 입니다!" })
+        return false
+    } else {
+        return false
+    }
+}
 
 router.post('/', async (req, res) => {
     try {
@@ -27,9 +35,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "유효하지 않은 ID형식 입니다!" })
-        }
+        if (!ensureObjectId(id, res)) return
+
         const todo = await Todo.findById(id)
         if (!todo) {
             return res.status(400).json({ message: "해당 ID의 할일 목록이 없습니다!" })
@@ -47,11 +54,8 @@ router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params
         const updateDate = req.body
+        if (!ensureObjectId(id, res)) return
 
-
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "유효하지 않은 ID형식 입니다!" })
-        }
         const updated = await Todo.findByIdAndUpdate(id, updateDate, {
             new: true,
             runValidators: true
@@ -60,7 +64,6 @@ router.put('/:id', async (req, res) => {
         if (!updated) {
             return res.status(400).json({ message: "해당 ID의 할일 목록이 없습니다!" })
         }
-
 
         res.status(201).json({ message: "수정하기 성공!!", updated })
     } catch (error) {
@@ -72,11 +75,8 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params
+        if (!ensureObjectId(id, res)) return
 
-
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "유효하지 않은 ID형식 입니다!" })
-        }
         const deleted = await Todo.findByIdAndDelete(id)
 
         if (!deleted) {
@@ -89,6 +89,53 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: "데이터를 불러오지 못했어여 ㅜ" })
 
+    }
+})
+
+router.patch('/:id/check', async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!ensureObjectId(id, res)) return
+        const { isCompleted } = req.body
+
+        if (typeof isCompleted !== 'boolean') {
+            return res.status(400).json({ message: "isCompleted는 반드시 Boolean이어야 합니다." })
+        }
+
+        const updated = await Todo.findByIdAndUpdate(id, { isCompleted }, { new: true, runValidators: true, context: 'query' })
+
+        if (!updated) {
+            return res.status(400).json({ message: "해당 ID의 할일 목록이 없습니다!" })
+        }
+
+        res.status(201).json({ message: "체크박스 상태 수정하기 성공!!", todo: updated })
+    } catch (error) {
+        res.status(400).json({ error: "데이터를 불러오지 못했어여 ㅜ" })
+
+    }
+})
+
+router.patch("/:id/text", async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!ensureObjectId(id, res)) return
+        const { text } = req.body
+
+        if (!text || !text.trim()) {
+            return res.status(400).json({ message: "text는 필수입니다." })
+        }
+
+        const updated = await Todo.findByIdAndUpdate(id,
+            { text: text.trim() },
+            { new: true, runValidators: true, context: 'query' }
+        )
+        if (!updated) {
+            return res.status(404).json({ message: '해당 Id의 todo가 없습니다.' })
+        }
+
+        res.status(201).json({ message: "텍스트 수정하기 성공", todo: updated })
+    } catch (error) {
+        res.status(400).json({ error: "데이터를 불러오지 못했습니다." })
     }
 })
 
