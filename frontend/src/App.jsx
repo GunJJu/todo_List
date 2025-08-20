@@ -78,9 +78,33 @@ function App() {
         )
       }
     } catch (error) {
-      console.error("체크 상ㅐ 업데이트 실패", error)
+      console.error("체크 상태 업데이트 실패", error)
     }
   }
+
+  const onUpdateText = async (id, next) => {
+    const value = text.trim()
+    if (!value) return
+
+    try {
+      const { data } = await axios.patch(`${API}/${id}/text`, {
+        text: value
+      })
+
+      if (Array.isArray(data?.todos)) {
+        setTodos(data.todos)
+      } else {
+        const updated = data?.todo ?? data
+        setTodos(
+          prev => prev.map(t => (t._id === updated._id ? updated : t))
+        )
+      }
+    } catch (error) {
+      console.error("텍스트 수정 실패", error)
+    }
+  }
+
+
 
   return (
     <div className='App'>
