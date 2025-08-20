@@ -63,6 +63,25 @@ function App() {
     }
   }
 
+  const onUpdateChecked = async (id, next) => {
+    try {
+      const { data } = await axios.patch(`${API}/${id}/check`, {
+        isCompleted: next
+      })
+
+      if (Array.isArray(data?.todos)) {
+        setTodos(data.todos)
+      } else {
+        const updated = data?.todo ?? data
+        setTodos(
+          prev => prev.map(t => (t._id === updated._id ? updated : t))
+        )
+      }
+    } catch (error) {
+      console.error("체크 상ㅐ 업데이트 실패", error)
+    }
+  }
+
   return (
     <div className='App'>
       <Header />

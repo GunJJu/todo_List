@@ -1,10 +1,16 @@
 import React from 'react'
 import './TodoItem.css'
 
-const TodoItem = ({ todo, onDelete }) => {
+const TodoItem = ({ todo, onDelete, onUpdateChecked }) => {
+    const idCompleted = !!todo.isCompleted
+
     return (
         <div className='todoTtem isCompleted'>
-            <input type="checkbox" readOnly />
+            <input
+                type="checkbox"
+                checked={todo.isCompleted}
+                onChange={() => onUpdateChecked(todo._id, !todo.isCompleted)}
+                readOnly />
             <div className="content">{todo.text}</div>
             <div className="date">{new Date(`${todo.date}`).toLocaleDateString()}</div>
             <div className="btn-wrap">
