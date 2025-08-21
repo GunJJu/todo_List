@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import './TodoList.css'
 import TodoItem from './TodoItem'
 
-const TodoList = ({ todos, onUpdateChecked, onUpdateText, onDelete }) => {
+const TodoList = ({ todos, onUpdateChecked, onUpdateTodo, onDelete }) => {
     const [q, setQ] = useState('')
     const filtered = useMemo(() => {
         const kw = q.trim().toLowerCase()
@@ -18,7 +18,7 @@ const TodoList = ({ todos, onUpdateChecked, onUpdateText, onDelete }) => {
             <input
                 type="text"
                 value={q}
-                onChange={(e) => e.target.value}
+                onChange={(e) => setQ(e.target.value)}
                 placeholder='검색어를 입력하세요!' />
             <div className='todos-wrapper'>
                 {filtered.map((todo, i) => (
@@ -27,7 +27,7 @@ const TodoList = ({ todos, onUpdateChecked, onUpdateText, onDelete }) => {
                         key={i}
                         todo={todo}
                         onUpdateChecked={onUpdateChecked}
-                        onUpdateText={onUpdateText}
+                        onUpdateTodo={onUpdateTodo}
                         onDelete={onDelete} />
                 ))}
 
